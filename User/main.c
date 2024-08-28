@@ -110,7 +110,7 @@ int main(void)
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n",SystemCoreClock);
 
-    TIM1_PWMOut_Init( 20000, 24-1, 1000 ); // 19.99ms period, 0.999ms high, 1us units for ccp
+    TIM1_PWMOut_Init( 20000, 48-1, 1000 ); // 19.99ms period, 0.999ms high, 1us units for ccp
 
     // Read TIM1, CH1CVR value - display value (capture/compare channel 1 register)
     printf("TIM1->CH1CVR: %u\n",TIM1->CH1CVR);
