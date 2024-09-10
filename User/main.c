@@ -83,24 +83,12 @@ void TIM1_PWMOut_Init(u16 arr, u16 psc, u16 ccp)
  * @brief   Main program.
  *
  * @return  none
- * The following measured periods and active high times are for PWM_MODE2
- * TIM1_PWMOut_Init(100, 48000-1, 50) 202ms period, 100ms high
- * TIM1_PWMOut_Init( 100, 480-1, 50 ) 2.02ms period, 1.02ms high
- * TIM1_PWMOut_Init( 1000, 480-1, 50 ) 20.00ms period, 19ms high
- * TIM1_PWMOut_Init( 1000, 480-1, 900 ) 20.00ms period, 2.02ms high
- * TIM1_PWMOut_Init( 1000, 480-1, 925 ) 20.00ms period, 1.52ms high
- * TIM1_PWMOut_Init( 1000, 480-1, 926 ) 20.00ms period, 1.499ms high
+ *
+ * For a device without a crystal, select the desired HSI frequency in system_ch32v00x.c
+ * #define SYSCLK_FREQ_48MHZ_HSI   48000000
  *
  * The following measured periods and active high times are for PWM_MODE1
- * TIM1_PWMOut_Init( 1000, 480-1, 75-1 ) 1.48ms high
- * TIM1_PWMOut_Init( 1000, 480-1, 75 ) 1.499ms high  - Center Servo - ccp units: 20us each
- * TIM1_PWMOut_Init( 1000, 480-1, 50 ) 999us high  - Servo Far Left
- * TIM1_PWMOut_Init( 1000, 480-1, 100 ) 1.99ms - Servo Far Right
- * TIM1_PWMOut_Init( 10000, 48-1, 750 ) 19.99ms period, 1.499ms high, 2us units for cpp
- *
  * TIM1_PWMOut_Init( 20000, 24-1, 1500 ) 19.99ms period, 1.499ms high, 1us units for ccp (BEST configuration!) Just change ccp for high time in micro seconds
- *
- * It appears something within this "application", has created an issue with Delay_Ms() function!
  */
 int main(void)
 {
@@ -110,14 +98,16 @@ int main(void)
     USART_Printf_Init(115200);
     printf("SystemClk:%d\r\n",SystemCoreClock);
 
-    TIM1_PWMOut_Init( 20000, 48-1, 1000 ); // 19.99ms period, 0.999ms high, 1us units for ccp
+    TIM1_PWMOut_Init( 20000, 48-1, 1000 ); // 20ms period, 1.0ms high, 1us units for ccp
 
     // Read TIM1, CH1CVR value - display value (capture/compare channel 1 register)
     printf("TIM1->CH1CVR: %u\n",TIM1->CH1CVR);
-    Delay_Ms(2000); // 2 seconds
+    Delay_Ms(2000);
+
     TIM1->CH1CVR = 1500; // 1.5ms
     printf("TIM1->CH1CVR: %u\n",TIM1->CH1CVR);
     Delay_Ms(2000);
+
     TIM1->CH1CVR = 2000; // 2.0ms
     printf("TIM1->CH1CVR: %u\n",TIM1->CH1CVR);
     while(1);
